@@ -1,0 +1,12 @@
+  spring:
+    datasource:
+      url: jdbc:mysql://127.0.0.1:3306/NTI
+      username: root
+      password: password
+    jpa: hibernate.ddl-auto=update
+  server:
+    port: 8080
+  paypal:
+    mode: sandbox
+    clientId: AdwbUW-uOWYBivFwXqfZQDrkz-XA_I8CgZQ9DI_xjfM0evMwOyLKqVx0FsU0aPtx4NXczvQlt1FEzpB5
+    clientSecret: EETsQFw1dK4ek8qybGt1haY_KbeOjVOXdm4nr_jyYUC1lo5FEIHF6Tx-E624Xv-oA8KP2SJgG2myXiPP
