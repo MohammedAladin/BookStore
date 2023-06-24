@@ -20,7 +20,19 @@ To run and use the Bookstore API, you will need the following:
 ```bash
 ./mvnw spring-boot:run
 ```
+## API Endpoints
 The application will be available at `http://localhost:8080`.
 
-## API Endpoints
+### GET /books
 
+Returns a list of books.
+
+Parameters:
+- `author` (optional): filter by author name
+- `title` (optional): filter by book title
+- `genre` (optional): filter by book genre
+- `rating` (optional): filter by book rating
+
+### GET /books/{id}
+
+Returns detailed information about a book with the specified ID.
