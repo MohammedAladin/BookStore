@@ -19,7 +19,7 @@ To run and use the Bookstore API, you will need the following:
 
 ```bash
 ./mvnw spring-boot:run
-
+```
 The application will be available at `http://localhost:8080`.
 
 ## API Endpoints
