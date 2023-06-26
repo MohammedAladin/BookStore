@@ -14,6 +14,7 @@ public class Book {
     private String author;
     private Double price;
 
+    private Integer quantity;
     public Book(String title, String author, Double price) {
         this.title = title;
         this.author = author;
@@ -21,6 +22,23 @@ public class Book {
     }
 
     public Book() {
+        quantity = 1;
+    }
+
+    public Long getBookId() {
+        return bookId;
+    }
+
+    public void setBookId(Long bookId) {
+        this.bookId = bookId;
+    }
+
+    public Integer getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(Integer quantity) {
+        this.quantity = quantity;
     }
 
     public Long getId() {

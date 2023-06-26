@@ -1,12 +1,17 @@
 package com.Integration.NTI.Controllers;
 
 import com.Integration.NTI.Models.Book;
+import com.Integration.NTI.Repositries.UserRepo;
 import com.Integration.NTI.Services.BookService;
+import com.paypal.api.payments.Payment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
+
 import java.util.List;
 
 
@@ -15,19 +20,33 @@ import java.util.List;
 public class BookController {
 
     private static BookService bookService;
+    private static UserRepo userRepo;
 
 
     @Autowired
-    public BookController(BookService bookService) {
+    public BookController(BookService bookService, UserRepo userRepo) {
         BookController.bookService = bookService;
+        BookController.userRepo = userRepo;
     }
-    @PreAuthorize("hasRole('USER')")
    @PostMapping("/create")
-   public ResponseEntity<Book> createNewBook(@RequestBody Book book){
-        Book result = bookService.addBook(book);
-        return new ResponseEntity<>(book, HttpStatus.CREATED);
+   @PreAuthorize("hasRole('ADMIN')")
+
+   public ResponseEntity<String> createNewBook(@RequestBody Book book){
+       Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+       boolean isAdmin = authentication.getAuthorities().stream()
+               .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
+       System.out.println(authentication.getAuthorities().stream());
+
+       // Print the user's role in the console
+       if (isAdmin) {
+           System.out.println("USER IS ADMIN");
+           bookService.addBook(book);
+           return new ResponseEntity<>("BOOK IS ADDED SUCCESSFULLY...", HttpStatus.CREATED);
+
+       } else {
+           return new ResponseEntity<>("ONLY ADMINS CAN ADD NEW BOOK...", HttpStatus.UNAUTHORIZED);
+       }
    }
-    @PreAuthorize("hasRole('USER')")
 
     @GetMapping({"/all", "/"})
     public ResponseEntity<List<Book>> listBooks(){
@@ -39,9 +58,9 @@ public class BookController {
         Book book = bookService.getById(id);
         return new ResponseEntity<>(book, HttpStatus.OK);
     }
-    @GetMapping("/delete")
-    public ResponseEntity<Book> deleteById(@PathVariable Long id){
+    @GetMapping("/delete/{id}")
+    public ResponseEntity<String> deleteById(@PathVariable Long id){
         bookService.deleteById(id);
-        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        return new ResponseEntity<>("BOOK IS SUCCESSFULLY DELETED",HttpStatus.NO_CONTENT);
     }
 }
