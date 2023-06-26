@@ -7,14 +7,14 @@ Bookstore API is a RESTful API developed using Java Spring that allows customers
 To run and use the Bookstore API, you will need the following:
 
 - Java 8 or higher
-- MySQL or PostgreSQL database
-- PayPal or Stripe account for payment gateway integration
+- MySQL database
+- PayPal account for payment gateway integration
 
 ## Setup
 
 1. Clone the repository to your local machine.
-2. Create a MySQL or PostgreSQL database and update the `application.properties` file with the database information.
-3. Create a PayPal or Stripe account and update the `application.properties` file with the payment gateway information.
+2. Create a MySQL database and update the `application.properties` file with the database information.
+3. Create a PayPal account and update the `application.properties` file with the payment gateway information.
 4. Run the following command in the terminal to start the application:
 
 ```bash
