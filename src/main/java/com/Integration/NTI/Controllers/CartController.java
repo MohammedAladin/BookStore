@@ -1,11 +1,12 @@
 package com.Integration.NTI.Controllers;
-
 import com.Integration.NTI.Models.Book;
 import com.Integration.NTI.Models.Cart;
 import com.Integration.NTI.Models.CartItem;
 import com.Integration.NTI.Requests.CartRequest;
+import com.Integration.NTI.Requests.PaymentRequest;
 import com.Integration.NTI.Services.BookService;
 import com.Integration.NTI.Services.CartServices;
+import com.paypal.base.rest.PayPalRESTException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -24,12 +25,16 @@ public class CartController {
     @Autowired
     private CartController(CartServices cartServices, BookService bookService){
         this.cartServices = cartServices;
+
         this.bookService = bookService;
     }
 
     @PostMapping("/AddToCart")
     private ResponseEntity<String> AddToCart(@RequestBody CartRequest cartRequest){
         Book book = bookService.getById(cartRequest.getBookId());
+
+        if(book.getQuantity() < cartRequest.getQuantity())
+            return new ResponseEntity<>("YOUR QUANTITY IS HIGHER THAN THE QUANTITY OF REQUIRED BOOK", HttpStatus.NOT_FOUND);
 
         CartItem newCartItem = new CartItem(book, cartRequest.getQuantity());
 
@@ -38,9 +43,13 @@ public class CartController {
         cart.addCartItem(newCartItem);
 
         cartServices.saveCart(cart);
-
+        //bookService.deleteById(cartRequest.getBookId(), cartRequest.getQuantity());
 
         return new ResponseEntity<>("ITEM IS ADDED SUCCESSFULLY TO : "+cart.getUser().getUserName() + " CART", HttpStatus.CREATED);
 
+    }
+    @PostMapping("/checkOutCart")
+    private ResponseEntity<String> checkOutCart(@RequestBody PaymentRequest paymentRequest) throws PayPalRESTException {
+        return new ResponseEntity<>(cartServices.checkOutCart(paymentRequest), HttpStatus.OK);
     }
 }

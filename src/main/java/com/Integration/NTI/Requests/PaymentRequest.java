@@ -1,22 +1,36 @@
-package com.Integration.NTI.Models;
+package com.Integration.NTI.Requests;
 
+import com.Integration.NTI.Models.CartItem;
 import org.springframework.web.bind.annotation.RequestParam;
+
+import java.math.BigDecimal;
+import java.util.List;
+
 public class PaymentRequest {
-    private double total;
+    private BigDecimal total;
     private String currency;
     private String description;
     private String cancelUrl;
     private String successUrl;
 
+    private List<CartItem> cartItems;
+
+    public List<CartItem> getCartItems() {
+        return cartItems;
+    }
+
+    public void setCartItems(List<CartItem> cartItems) {
+        this.cartItems = cartItems;
+    }
 
     public PaymentRequest() {
     }
 
-    public double getTotal() {
+    public BigDecimal getTotal() {
         return total;
     }
 
-    public void setTotal(double total) {
+    public void setTotal(BigDecimal total) {
         this.total = total;
     }
 

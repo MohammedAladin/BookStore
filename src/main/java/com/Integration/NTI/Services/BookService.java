@@ -33,9 +33,18 @@ public class BookService {
     public Book getById(Long id){
         return bookRepo.findById(id).get();
     }
-    public void deleteById(Long id){
-        bookRepo.deleteById(id);
+    public void deleteById(Long id, Integer quantity){
+        Book book = getById(id);
+        int updatedQuantity = book.getQuantity() - quantity;
+        if(updatedQuantity>0){
+            book.setQuantity(updatedQuantity);
+            bookRepo.save(book);
+        }
+        else{
+            bookRepo.delete(book);
+        }
 
+        bookRepo.deleteById(id);
     }
 
 

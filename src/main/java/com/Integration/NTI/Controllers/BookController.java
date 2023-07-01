@@ -2,6 +2,7 @@ package com.Integration.NTI.Controllers;
 
 import com.Integration.NTI.Models.Book;
 import com.Integration.NTI.Repositries.UserRepo;
+import com.Integration.NTI.Requests.CartRequest;
 import com.Integration.NTI.Services.BookService;
 import com.paypal.api.payments.Payment;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,14 +20,14 @@ import java.util.List;
 @RestController
 public class BookController {
 
-    private static BookService bookService;
-    private static UserRepo userRepo;
+    private BookService bookService;
+    private UserRepo userRepo;
 
 
     @Autowired
     public BookController(BookService bookService, UserRepo userRepo) {
-        BookController.bookService = bookService;
-        BookController.userRepo = userRepo;
+        this.bookService = bookService;
+        this.userRepo = userRepo;
     }
    @PostMapping("/create")
    @PreAuthorize("hasRole('ADMIN')")
@@ -35,11 +36,9 @@ public class BookController {
        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
        boolean isAdmin = authentication.getAuthorities().stream()
                .anyMatch(auth -> auth.getAuthority().equals("ROLE_ADMIN"));
-       System.out.println(authentication.getAuthorities().stream());
 
        // Print the user's role in the console
        if (isAdmin) {
-           System.out.println("USER IS ADMIN");
            bookService.addBook(book);
            return new ResponseEntity<>("BOOK IS ADDED SUCCESSFULLY...", HttpStatus.CREATED);
 
@@ -59,8 +58,8 @@ public class BookController {
         return new ResponseEntity<>(book, HttpStatus.OK);
     }
     @GetMapping("/delete/{id}")
-    public ResponseEntity<String> deleteById(@PathVariable Long id){
-        bookService.deleteById(id);
+    public ResponseEntity<String> deleteById(@RequestBody CartRequest request){
+        bookService.deleteById(request.getBookId(), request.getQuantity());
         return new ResponseEntity<>("BOOK IS SUCCESSFULLY DELETED",HttpStatus.NO_CONTENT);
     }
 }

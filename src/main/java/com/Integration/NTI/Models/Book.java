@@ -2,6 +2,7 @@ package com.Integration.NTI.Models;
 
 import javax.persistence.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -9,13 +10,12 @@ public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long bookId;
-
     private String title;
     private String author;
-    private Double price;
+    private BigDecimal price;
 
     private Integer quantity;
-    public Book(String title, String author, Double price) {
+    public Book(String title, String author, BigDecimal price) {
         this.title = title;
         this.author = author;
         this.price = price;
@@ -65,11 +65,11 @@ public class Book {
         this.author = author;
     }
 
-    public Double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 

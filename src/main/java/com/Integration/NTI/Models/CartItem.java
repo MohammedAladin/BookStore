@@ -1,6 +1,7 @@
 package com.Integration.NTI.Models;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "cart_item")
@@ -15,7 +16,7 @@ public class CartItem {
 
     private int quantity;
 
-    private double price;
+    private BigDecimal price = BigDecimal.ZERO;
 
     @ManyToOne
     @JoinColumn(name = "cart_id")
@@ -45,11 +46,11 @@ public class CartItem {
         this.quantity = quantity;
     }
 
-    public double getPrice() {
+    public BigDecimal getPrice() {
         return price;
     }
 
-    public void setPrice(double price) {
+    public void setPrice(BigDecimal price) {
         this.price = price;
     }
 
@@ -66,7 +67,7 @@ public class CartItem {
     public CartItem(Book book, int quantity) {
         this.book = book;
         this.quantity = quantity;
-        this.price = book.getPrice() * quantity;
+        this.price = price.add(book.getPrice().multiply(BigDecimal.valueOf(quantity)));
     }
 
     public CartItem(){}

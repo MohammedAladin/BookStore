@@ -1,6 +1,6 @@
 package com.Integration.NTI.Controllers;
 
-import com.Integration.NTI.Models.CreateUserRequest;
+import com.Integration.NTI.Requests.CreateUserRequest;
 import com.Integration.NTI.Models.Role;
 import com.Integration.NTI.Models.User;
 import com.Integration.NTI.Services.UserService;
@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
