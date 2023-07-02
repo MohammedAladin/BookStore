@@ -1,4 +1,4 @@
-package com.Integration.NTI.Models;
+package com.Integration.NTI.Response;
 
 public class PaymentResponse {
     private String paymentId;

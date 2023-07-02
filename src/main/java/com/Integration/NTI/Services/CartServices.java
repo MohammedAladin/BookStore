@@ -1,7 +1,7 @@
 package com.Integration.NTI.Services;
 import com.Integration.NTI.Models.Cart;
 import com.Integration.NTI.Models.CartItem;
-import com.Integration.NTI.Models.PaymentResponse;
+import com.Integration.NTI.Response.PaymentResponse;
 import com.Integration.NTI.Models.User;
 import com.Integration.NTI.Repositries.CartItemRepo;
 import com.Integration.NTI.Repositries.ShoppingCartRepo;
@@ -59,10 +59,12 @@ public class CartServices {
 
     public List<CartItem> getAllCartItems(Long cartId){
 
-        List<CartItem> items = new ArrayList<>();
+
         List<CartItem> allItems = cartItemRepo.findAll();
+        List<CartItem> items = new ArrayList<>();
         for(CartItem item : allItems){
-            if(item.getCart().getId()==cartId)items.add(item);
+            if(item.getCart().getId().equals(cartId))
+                items.add(item);
         }
         return items;
     }

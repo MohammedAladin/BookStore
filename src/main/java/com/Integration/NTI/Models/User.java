@@ -1,5 +1,8 @@
 package com.Integration.NTI.Models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import org.hibernate.validator.constraints.UniqueElements;
+
 import javax.persistence.*;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
@@ -20,11 +23,10 @@ public class User {
 
     private Long id;
 
-    @NotEmpty
 
+    @Column(nullable = false, unique = true)
     private String userName;
     @NotEmpty
-
     private String password;
 
     boolean isAdmin;
@@ -37,7 +39,10 @@ public class User {
     public User(){
         this.roles = new HashSet<>();
     }
+
     @OneToOne(mappedBy = "user",cascade = CascadeType.ALL)
+    @JsonManagedReference
+
     private Cart cart;
 
     @ElementCollection(fetch = FetchType.EAGER)
@@ -94,5 +99,15 @@ public class User {
 
     public void setCart(Cart cart) {
         this.cart = cart;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", userName='" + userName + '\'' +
+                ", password='" + password + '\'' +
+                ", roles=" + roles +
+                '}';
     }
 }

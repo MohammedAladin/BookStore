@@ -6,7 +6,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
-public class Book {
+public class Book extends Item {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long bookId;
@@ -15,11 +15,16 @@ public class Book {
     private BigDecimal price;
 
     private Integer quantity;
-    public Book(String title, String author, BigDecimal price) {
+    public Book(String title, BigDecimal price, Integer quantity) {
         this.title = title;
-        this.author = author;
+        this.quantity = quantity;
         this.price = price;
     }
+    public Book(BigDecimal price, Integer quantity) {
+        this.quantity = quantity;
+        this.price = price;
+    }
+
 
     public Book() {
         quantity = 1;
@@ -33,13 +38,6 @@ public class Book {
         this.bookId = bookId;
     }
 
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
-    }
 
     public Long getId() {
         return bookId;
@@ -49,29 +47,65 @@ public class Book {
         this.bookId = id;
     }
 
-    public String getTitle() {
-        return title;
+    @Override
+    public String getType() {
+        return "Book";
     }
 
-    public void setTitle(String title) {
-        this.title = title;
+    @Override
+    public String getTitle() {
+        return this.title;
     }
+
+    @Override
+    public BigDecimal getPrice() {
+        return this.price;
+    }
+
+    @Override
+    public Integer getQuantity() {
+        return this.quantity;
+    }
+
+    @Override
+
 
     public String getAuthor() {
         return author;
     }
 
+
+
+    @Override
+    public void setTitle(String title) {
+        this.title=title;
+    }
+
+    @Override
+    public void setPrice(BigDecimal price) {
+        this.price=price;
+    }
+
+    @Override
+    public void setQuantity(Integer quantity) {
+        this.quantity= quantity;
+    }
+
+
     public void setAuthor(String author) {
         this.author = author;
     }
 
-    public BigDecimal getPrice() {
-        return price;
+
+
+    @Override
+    public String toString() {
+        return "Book{" +
+                "bookId=" + bookId +
+                ", title='" + title + '\'' +
+                ", author='" + author + '\'' +
+                ", price=" + price +
+                ", quantity=" + quantity +
+                '}';
     }
-
-    public void setPrice(BigDecimal price) {
-        this.price = price;
-    }
-
-
 }

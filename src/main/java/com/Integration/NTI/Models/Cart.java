@@ -1,5 +1,7 @@
 package com.Integration.NTI.Models;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 
 import java.util.ArrayList;
@@ -14,7 +16,10 @@ public class Cart {
 
     @OneToOne
     @JoinColumn(name = "user_id")
+    @JsonManagedReference
+
     private User user;
+
 
     @OneToMany(mappedBy = "cart", cascade = CascadeType.ALL)
     private List<CartItem> cartItems = new ArrayList<>();
@@ -53,5 +58,13 @@ public class Cart {
 
     public void setCartItems(List<CartItem> cartItems) {
         this.cartItems = cartItems;
+    }
+
+    @Override
+    public String toString() {
+        return "Cart{" +
+                "id=" + id +
+                ", cartItems=" + cartItems +
+                '}';
     }
 }

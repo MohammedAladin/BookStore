@@ -10,8 +10,9 @@ public class CartItem {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private String type;
     @ManyToOne
-    @JoinColumn(name = "book_id")
+    @JoinColumn(name = "item_id")
     private Book book;
 
     private int quantity;
@@ -30,7 +31,7 @@ public class CartItem {
         this.id = id;
     }
 
-    public Book getBook() {
+    public Item getBook() {
         return book;
     }
 
@@ -62,13 +63,32 @@ public class CartItem {
         this.cart = cart;
     }
 
-    // Constructor, getters, and setters
+    public String getType() {
+        return type;
+    }
 
-    public CartItem(Book book, int quantity) {
-        this.book = book;
+    public void setType(String type) {
+        this.type = type;
+    }
+// Constructor, getters, and setters
+
+    public CartItem(String type,Book item, int quantity) {
+        this.book = item;
         this.quantity = quantity;
+        this.type =type;
         this.price = price.add(book.getPrice().multiply(BigDecimal.valueOf(quantity)));
     }
 
     public CartItem(){}
+
+    @Override
+    public String toString() {
+        return "CartItem{" +
+                "id=" + id +
+                ", book=" + book +
+                ", quantity=" + quantity +
+                ", price=" + price +
+                ", cart=" + cart +
+                '}';
+    }
 }

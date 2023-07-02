@@ -31,7 +31,6 @@ public class BookController {
     }
    @PostMapping("/create")
    @PreAuthorize("hasRole('ADMIN')")
-
    public ResponseEntity<String> createNewBook(@RequestBody Book book){
        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
        boolean isAdmin = authentication.getAuthorities().stream()
@@ -58,6 +57,7 @@ public class BookController {
         return new ResponseEntity<>(book, HttpStatus.OK);
     }
     @GetMapping("/delete/{id}")
+
     public ResponseEntity<String> deleteById(@RequestBody CartRequest request){
         bookService.deleteById(request.getBookId(), request.getQuantity());
         return new ResponseEntity<>("BOOK IS SUCCESSFULLY DELETED",HttpStatus.NO_CONTENT);
