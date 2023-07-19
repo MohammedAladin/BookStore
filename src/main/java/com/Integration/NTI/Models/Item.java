@@ -11,6 +11,8 @@ public abstract class Item {
     public abstract Integer getQuantity();
     public abstract String getAuthor();
 
+    public abstract Long getId();
+
     public abstract void setTitle(String title);
     public abstract void setPrice(BigDecimal price);
     public abstract void setQuantity(Integer quantity);

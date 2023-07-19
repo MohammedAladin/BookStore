@@ -35,7 +35,6 @@ public class CartController {
     @PostMapping("/AddToCart")
     private ResponseEntity<String> AddToCart(@RequestBody CartRequest cartRequest){
 
-        try {
             Book book = bookService.getById(cartRequest.getBookId());
 
             if(book.getQuantity() < cartRequest.getQuantity())
@@ -48,15 +47,8 @@ public class CartController {
             cart.addCartItem(newCartItem);
 
             cartServices.saveCart(cart);
-            //bookService.deleteById(cartRequest.getBookId(), cartRequest.getQuantity());
 
             return new ResponseEntity<>("ITEM IS ADDED SUCCESSFULLY TO : "+cart.getUser().getUserName() + " CART", HttpStatus.CREATED);
-
-        }catch (NoSuchElementException e)
-        {
-            return new ResponseEntity<>("THIS BOOK IS NO LONGER EXIST.... ", HttpStatus.NOT_FOUND);
-
-        }
 
     }
     @PostMapping("/checkOutCart")

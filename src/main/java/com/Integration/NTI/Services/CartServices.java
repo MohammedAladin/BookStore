@@ -24,21 +24,22 @@ public class CartServices {
     private ShoppingCartRepo cartRepo;
     private UserRepo userRepo;
 
-
     private UserService userService;
 
     private PaymentService paymentService;
+    private BookService bookService;
     private CartItemRepo cartItemRepo;
 
     @Autowired
     private CartServices(ShoppingCartRepo cartRepo, UserRepo userRepo,
                          UserService userService, PaymentService paymentService,
-                         CartItemRepo cartItemRepo){
+                         CartItemRepo cartItemRepo, BookService bookService){
         this.cartRepo = cartRepo;
         this.userRepo = userRepo;
         this.userService = userService;
         this.paymentService = paymentService;
         this.cartItemRepo = cartItemRepo;
+        this.bookService = bookService;
     }
 
     public Cart getCartForCurrentUser(){
@@ -76,6 +77,12 @@ public class CartServices {
         }
         return total;
     }
+    public void updateItems(List<CartItem> items){
+        for(CartItem item : items){
+            cartItemRepo.delete(item);
+            bookService.deleteById(item.getBook().getId(), item.getQuantity());
+        }
+    }
     public String checkOutCart(PaymentRequest paymentRequest) throws PayPalRESTException {
         Long cartId = getCartForCurrentUser().getId();
         List<CartItem> items = getAllCartItems(cartId);
@@ -86,9 +93,9 @@ public class CartServices {
 
         PaymentResponse paymentResponse = paymentService.executePayment(paymentRequest);
 
+        updateItems(items);
+
         return paymentResponse.getApprovalLink();
-
-
 
     }
 

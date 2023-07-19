@@ -3,7 +3,6 @@ package com.Integration.NTI.Models;
 import javax.persistence.*;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 @Entity
 public class Book extends Item {
@@ -29,24 +28,6 @@ public class Book extends Item {
     public Book() {
         quantity = 1;
     }
-
-    public Long getBookId() {
-        return bookId;
-    }
-
-    public void setBookId(Long bookId) {
-        this.bookId = bookId;
-    }
-
-
-    public Long getId() {
-        return bookId;
-    }
-
-    public void setId(Long id) {
-        this.bookId = id;
-    }
-
     @Override
     public String getType() {
         return "Book";
@@ -74,6 +55,10 @@ public class Book extends Item {
         return author;
     }
 
+    @Override
+    public Long getId() {
+        return bookId;
+    }
 
 
     @Override

@@ -5,9 +5,11 @@ import com.Integration.NTI.Models.User;
 import com.Integration.NTI.Repositries.BookRepo;
 import com.Integration.NTI.Repositries.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -49,9 +51,16 @@ public class UserService implements UserDetailsService {
     public User getByUsername(String username){
         return userRepo.findByUserName(username);
     }
+    public User returnUserAuth(){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String userName = ((UserDetails) authentication.getPrincipal()).getUsername();
+        return getByUsername(userName);
+
+    }
     public List<User> findAll(){
         return userRepo.findAll();
     }
+
     public User addUser(User user){
          return userRepo.save(user);
     }

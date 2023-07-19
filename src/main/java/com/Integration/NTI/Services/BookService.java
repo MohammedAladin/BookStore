@@ -3,8 +3,10 @@ package com.Integration.NTI.Services;
 import com.Integration.NTI.Models.Book;
 import com.Integration.NTI.Repositries.BookRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.stereotype.Service;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 @Service
 public class BookService {
@@ -30,7 +32,11 @@ public class BookService {
         return all;
     }
     public Book getById(Long id){
-        return bookRepo.findById(id).get();
+        try {
+            return bookRepo.findById(id).get();
+        } catch (NoSuchElementException ex){
+            throw new NoSuchElementException("THIS BOOK IS NO LONGER EXIST...");
+        }
     }
     public void deleteById(Long id, Integer quantity){
         Book book = getById(id);
