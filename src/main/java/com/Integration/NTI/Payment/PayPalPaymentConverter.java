@@ -24,7 +24,7 @@ public class PayPalPaymentConverter {
     }
 
 
-    public Payment toPayPalPayment(PaymentRequest request) {
+    public Payment toPayPalPayment(PaymentRequest request , List<CartItem> items) {
         // Create a PayPal Payment object
         Payment payment = new Payment();
 
@@ -41,17 +41,17 @@ public class PayPalPaymentConverter {
         // Set the transaction information
         Transaction transaction = new Transaction();
 
-        transaction.setAmount(new Amount(request.getCurrency(),
-                request.getTotal().setScale(2, RoundingMode.HALF_UP).toString()));
+       Amount amount =  new Amount(request.getCurrency(),request.getTotal().setScale(2, RoundingMode.HALF_UP).toString());
+        transaction.setAmount(amount);
 
         transaction.setDescription(request.getDescription());
 
 
         ItemList itemList = new ItemList();
-        List<Item> items = new ArrayList<>();
+        List<Item> newItems = new ArrayList<>();
 
-        for(CartItem cartItem : request.getCartItems()){
-            Book book = bookService.getById(cartItem.getId());
+        for(CartItem cartItem : items){
+            Book book = bookService.getById(cartItem.getBook().getId());
 
             Item item = new Item();
 
@@ -63,11 +63,11 @@ public class PayPalPaymentConverter {
 
             item.setPrice(book.getPrice().toString());
 
-            items.add(item);
+            newItems.add(item);
         }
 
 
-        itemList.setItems(items);
+        itemList.setItems(newItems);
         transaction.setItemList(itemList);
         List<Transaction> transactions = new ArrayList<>();
         transactions.add(transaction);

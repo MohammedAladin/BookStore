@@ -49,7 +49,6 @@ public class BookService {
             bookRepo.delete(book);
         }
 
-        bookRepo.deleteById(id);
     }
 
 

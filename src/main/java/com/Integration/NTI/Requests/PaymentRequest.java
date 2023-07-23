@@ -13,15 +13,6 @@ public class PaymentRequest {
     private String cancelUrl;
     private String successUrl;
 
-    private List<CartItem> cartItems;
-
-    public List<CartItem> getCartItems() {
-        return cartItems;
-    }
-
-    public void setCartItems(List<CartItem> cartItems) {
-        this.cartItems = cartItems;
-    }
 
     public PaymentRequest() {
     }
