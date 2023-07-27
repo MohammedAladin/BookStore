@@ -1,7 +1,7 @@
 package com.Integration.NTI.Controllers;
+import com.Integration.NTI.Exception.CustomException;
 import com.Integration.NTI.Requests.CreateUserRequest;
-import com.Integration.NTI.Models.Role;
-import com.Integration.NTI.Models.User;
+import com.Integration.NTI.Templates.ResponseWrapper;
 import com.Integration.NTI.Response.UserResponse;
 import com.Integration.NTI.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,13 +14,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
-
-
 @RestController
 @RequestMapping("/api/auth")
 
@@ -33,27 +27,40 @@ public class UserController {
     @Autowired
     private PasswordEncoder passwordEncoder;
     @PostMapping("/SignUp")
-    public ResponseEntity<String> createUser(@Valid @RequestBody CreateUserRequest userRequest, BindingResult bindingResult)  {
-
+    public ResponseEntity<String> createUser(@Valid @RequestBody CreateUserRequest userRequest)  {
         try {
             userService.addUser(userRequest);
             return new ResponseEntity<>("USER ADDED SUCCESSFULLY", HttpStatus.CREATED);
-        } catch (Exception e) {
-            return new ResponseEntity<>("THIS USERNAME IS ALREADY TAKEN, TRY ANOTHER ONE.. ", HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (CustomException e) {
+            return new ResponseEntity<>(e.getDescription(), e.getStatus());
         }
     }
     @GetMapping({"","/"})
     @PreAuthorize("hasRole('ADMIN')")
-    public ResponseEntity<List<UserResponse>> findAll(){
-        User authUser = userService.returnUserAuth();
-        if(authUser.getRoles().contains(Role.ADMIN))
-        {
-            List<User> users = userService.findAll();
-            List<UserResponse> responses = UserResponse.ConvertToUserResponse(users);
-            return new ResponseEntity<>(responses, HttpStatus.OK);
-        }
-        else {
-            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
-        }
+    public ResponseEntity<ResponseWrapper<UserResponse>> findAll(){
+      try {
+          List<UserResponse> userResponses = userService.findAll();
+          ResponseWrapper<UserResponse> response = new ResponseWrapper<>();
+          response.setDataList(userResponses);
+          response.setErrorMessage("NO ERRORS HAVE BEEN CATCHED..");
+          return new ResponseEntity<>(response, HttpStatus.OK);
+      }catch (CustomException ex){
+          ResponseWrapper<UserResponse> errorResponse = new ResponseWrapper<>();
+          errorResponse.setErrorMessage("Error: " + ex.getMessage());
+          return new ResponseEntity<>(errorResponse, ex.getStatus());
+      }
+    }
+    @GetMapping(value = "/getByName")
+    public ResponseEntity<ResponseWrapper<UserResponse>> getUserByName(@RequestParam String name){
+        ResponseWrapper<UserResponse> response = new ResponseWrapper<>();
+        try {
+            UserResponse userResponse = userService.getByUsername(name).getUserResponse();
+            response.setData(userResponse);
+            response.setErrorMessage("NO ERRORS HAVE BEEN CATCHED..");
+            return new ResponseEntity<>(response, HttpStatus.OK);
+        }catch (CustomException ex){
+            response.setErrorMessage("Error: " + ex.getMessage());
+                return new ResponseEntity<>(response, ex.getStatus());
+            }
     }
 }

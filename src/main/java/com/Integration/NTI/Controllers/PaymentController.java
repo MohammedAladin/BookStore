@@ -16,6 +16,7 @@ import com.paypal.base.rest.PayPalRESTException;
 import com.paypal.api.payments.*;
 
 @RestController
+@RequestMapping("api/")
 public class PaymentController {
     private PaymentService paymentService;
     private CartServices cartServices;
@@ -25,12 +26,11 @@ public class PaymentController {
     }
     @Autowired
     private HttpSession session;
-    @GetMapping("/execute-payment")
+    @PostMapping("/execute-payment")
     public ResponseEntity<String> executePayment(@RequestBody PaymentRequest paymentRequest) throws PayPalRESTException {
 
         try {
-            cartServices.checkOutCart(paymentRequest);
-            return new ResponseEntity<>("PAYMENT SUCCESSFULLY DONE", HttpStatus.OK);
+            return new ResponseEntity<>(paymentService.checkOutCart(paymentRequest), HttpStatus.OK);
         }catch (CustomException ex){
             return new ResponseEntity<>(ex.getDescription(),ex.getStatus());
 

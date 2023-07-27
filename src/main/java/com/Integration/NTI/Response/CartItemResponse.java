@@ -1,5 +1,10 @@
 package com.Integration.NTI.Response;
+import com.Integration.NTI.Models.Book;
+import com.Integration.NTI.Models.CartItem;
+
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CartItemResponse {
 
@@ -25,5 +30,17 @@ public class CartItemResponse {
         this.title = title;
         this.price = price;
         this.quantity = quantity;
+    }
+    public static List<CartItemResponse> convertToItemResponse(List<CartItem> cartItems){
+        List<CartItemResponse> responseList = new ArrayList<>();
+        for(CartItem cartItem : cartItems){
+            Book book = cartItem.getBook();
+            CartItemResponse cartItemResponse = new CartItemResponse(cartItem.getType()
+                    ,book.getTitle(),book.getPrice(), cartItem.getQuantity());
+
+            responseList.add(cartItemResponse);
+        }
+        return responseList;
+
     }
 }

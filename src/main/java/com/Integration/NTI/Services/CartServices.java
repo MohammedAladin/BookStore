@@ -4,12 +4,15 @@ import com.Integration.NTI.Models.Book;
 import com.Integration.NTI.Models.Cart;
 import com.Integration.NTI.Models.CartItem;
 import com.Integration.NTI.Requests.CartRequest;
+import com.Integration.NTI.Response.BookRespnse;
+import com.Integration.NTI.Response.CartItemResponse;
 import com.Integration.NTI.Response.PaymentResponse;
 import com.Integration.NTI.Models.User;
 import com.Integration.NTI.Repositries.CartItemRepo;
 import com.Integration.NTI.Repositries.ShoppingCartRepo;
 import com.Integration.NTI.Repositries.UserRepo;
 import com.Integration.NTI.Requests.PaymentRequest;
+import com.Integration.NTI.Templates.CartWrapper;
 import com.paypal.base.rest.PayPalRESTException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CartServices {
@@ -31,29 +35,26 @@ public class CartServices {
 
     private UserService userService;
 
-    private PaymentService paymentService;
     private BookService bookService;
     private CartItemRepo cartItemRepo;
 
     @Autowired
     private CartServices(ShoppingCartRepo cartRepo, UserRepo userRepo,
-                         UserService userService, PaymentService paymentService,
+                         UserService userService,
                          CartItemRepo cartItemRepo, BookService bookService){
         this.cartRepo = cartRepo;
         this.userRepo = userRepo;
         this.userService = userService;
-        this.paymentService = paymentService;
         this.cartItemRepo = cartItemRepo;
         this.bookService = bookService;
     }
-
-    public Cart getCartForCurrentUser(){
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userName = ((UserDetails) authentication.getPrincipal()).getUsername();
-        System.out.println(userName);
-
-        User user = userService.getByUsername(userName);
-
+    public Cart getCartForCurrentUser() throws CustomException {
+        User user;
+        try {
+            user = userService.returnUserAuth();
+        }catch (CustomException ex){
+            throw new CustomException(ex.getDescription(),ex.getStatus());
+        }
         Cart cart = user.getCart();
         if(cart==null){
             cart = new Cart();
@@ -63,19 +64,32 @@ public class CartServices {
         return cart;
     }
 
-    public List<CartItem> getAllCartItems(Long cartId){
-
+    public CartWrapper getAllCartItems() throws CustomException {
+        User user;
+        try {
+            user = userService.returnUserAuth();
+        }catch (CustomException ex){
+            throw new CustomException(ex.getDescription(), ex.getStatus());
+        }
+        Long cartId = user.getCart().getId();
 
         List<CartItem> allItems = cartItemRepo.findAll();
-        List<CartItem> items = new ArrayList<>();
-        for(CartItem item : allItems){
 
+        List<CartItem> items = new ArrayList<>();
+
+        for(CartItem item : allItems){
             if(item.getCart().getId().equals(cartId))
                 items.add(item);
         }
-        return items;
+
+        List<CartItemResponse> cartItemResponses = CartItemResponse.convertToItemResponse(items);
+
+        CartWrapper cartWrapper = new CartWrapper(cartItemResponses, items);
+
+        return cartWrapper;
+
     }
-    private BigDecimal calculateTotalAmount(List<CartItem> cartItems) {
+    public BigDecimal calculateTotalAmount(List<CartItem> cartItems) {
         BigDecimal total = BigDecimal.ZERO;
         for (CartItem cartItem : cartItems) {
             BigDecimal itemTotal = cartItem.getPrice();
@@ -94,24 +108,6 @@ public class CartServices {
             }
         }
     }
-    public String checkOutCart(PaymentRequest paymentRequest) throws PayPalRESTException, CustomException {
-
-        Long cartId = getCartForCurrentUser().getId();
-        List<CartItem> items = getAllCartItems(cartId);
-        BigDecimal total = calculateTotalAmount(items);
-        paymentRequest.setTotal(total);
-        System.out.println("payment sett");
-        PaymentResponse paymentResponse = paymentService.executePayment(paymentRequest, items);
-        try {
-            updateItems(items);
-        }catch (CustomException ex){
-            throw new CustomException(ex.getDescription(),ex.getStatus());
-        }
-
-        return paymentResponse.getApprovalLink();
-
-    }
-
     public void saveCart(CartRequest cartRequest) throws NullPointerException, CustomException {
         Book book;
         try {
@@ -120,18 +116,27 @@ public class CartServices {
             throw new CustomException(ex.getDescription(),ex.getStatus());
         }
 
-
-        if(book.getQuantity() < cartRequest.getQuantity())
-            throw null;
-
-        CartItem newCartItem = new CartItem("Book",book, cartRequest.getQuantity());
-
-
-
+        CartItem newCartItem = null;
         Cart cart = getCartForCurrentUser();
 
-        cart.addCartItem(newCartItem);
+        List<CartItem> items = getAllCartItems().getCartItems();
+        boolean flg = false;
+        for(CartItem cartItem : items){
+            if(book.getTitle().equals(cartItem.getBook().getTitle())) {
 
+                if(book.getQuantity() < cartItem.getQuantity() + cartRequest.getQuantity())
+                    throw new CustomException("THIS QUANTITY IS NOT AVAILABLE..", HttpStatus.NO_CONTENT);
+
+                cartItem.setQuantity(cartItem.getQuantity() + cartRequest.getQuantity());
+                cartItemRepo.save(cartItem);
+                flg = true;
+                break;
+            }
+        }
+        if(!flg) {
+            newCartItem = new CartItem("Book", book, cartRequest.getQuantity());
+            cart.addCartItem(newCartItem);
+        }
         cartRepo.save(cart);
     }
 

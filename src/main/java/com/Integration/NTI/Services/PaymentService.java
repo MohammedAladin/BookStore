@@ -9,6 +9,7 @@ import com.paypal.base.rest.PayPalRESTException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import com.paypal.base.rest.APIContext;
@@ -22,13 +23,31 @@ public class PaymentService {
     private PayPalApi payPalApi;
     private PayPalPaymentConverter payPalPaymentConverter;
 
+    private CartServices cartServices;
+
     @Autowired
-    public PaymentService(PayPalPaymentConverter payPalPaymentConverter, PayPalApi payPalApi){
+    public PaymentService(PayPalPaymentConverter payPalPaymentConverter, PayPalApi payPalApi, CartServices cartServices){
         this.payPalPaymentConverter = payPalPaymentConverter;
         this.payPalApi = payPalApi;
+        this.cartServices = cartServices;
     }
 
 
+    public String checkOutCart(PaymentRequest paymentRequest) throws PayPalRESTException, CustomException {
+
+        List<CartItem> items = cartServices.getAllCartItems().getCartItems();
+        BigDecimal total = cartServices.calculateTotalAmount(items);
+        paymentRequest.setTotal(total);
+        PaymentResponse paymentResponse = executePayment(paymentRequest, items);
+        try {
+            cartServices.updateItems(items);
+        }catch (CustomException ex){
+            throw new CustomException(ex.getDescription(),ex.getStatus());
+        }
+
+        return paymentResponse.getApprovalLink();
+
+    }
 
     public PaymentResponse executePayment(PaymentRequest request, List<CartItem> items) throws PayPalRESTException, CustomException {
         // Convert the PaymentRequest to a PayPal Payment object

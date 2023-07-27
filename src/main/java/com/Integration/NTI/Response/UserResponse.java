@@ -35,4 +35,15 @@ public class UserResponse {
 
         return responses;
     }
+    public static UserResponse ConvertToUserResponse(User user){
+            UserResponse userResponse;
+            try {
+                userResponse = new UserResponse(user.getUserName(), user.getCart().getId(), user.isAdmin());
+
+            }catch (NullPointerException e){
+                userResponse = new UserResponse(user.getUserName(), user.isAdmin());
+            }
+
+        return userResponse;
+    }
 }

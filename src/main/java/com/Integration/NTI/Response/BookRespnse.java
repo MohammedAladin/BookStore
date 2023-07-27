@@ -1,13 +1,11 @@
 package com.Integration.NTI.Response;
 
-import com.Integration.NTI.Interfaces.Item;
+import com.Integration.NTI.Models.BaseBook;
 import com.Integration.NTI.Models.Book;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.math.BigDecimal;
-
-public class BookRespnse extends Item {
+public class BookRespnse extends BaseBook {
 
 
     @Getter @Setter

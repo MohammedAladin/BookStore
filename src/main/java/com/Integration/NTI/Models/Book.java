@@ -1,6 +1,5 @@
 package com.Integration.NTI.Models;
 
-import com.Integration.NTI.Interfaces.Item;
 import lombok.Getter;
 import lombok.Setter;
 
