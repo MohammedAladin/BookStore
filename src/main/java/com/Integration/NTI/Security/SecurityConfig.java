@@ -25,19 +25,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
-                    .cors().and().csrf().disable()
-                    .sessionManagement()
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                        .and()
-                    .authorizeRequests()
-                        .antMatchers("api/books/create").hasRole("ADMIN")
-                        .antMatchers("/api/auth/SingUp").permitAll()
-                        .anyRequest().authenticated()
-                        .and()
-                    .formLogin()
-                        .permitAll()
-                        .and()
-                    .httpBasic();
+                .cors().and().csrf().disable()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .authorizeRequests()
+                .antMatchers("api/books/create").hasRole("ADMIN")
+                .antMatchers("/api/auth/SingUp").permitAll()
+                .anyRequest().authenticated()
+                .and()
+                .formLogin()
+                .permitAll()
+                .and()
+                .httpBasic();
     }
 
 

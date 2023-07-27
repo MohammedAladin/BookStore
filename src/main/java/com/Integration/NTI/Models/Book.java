@@ -1,96 +1,41 @@
 package com.Integration.NTI.Models;
 
+import com.Integration.NTI.Interfaces.Item;
+import lombok.Getter;
+import lombok.Setter;
+
 import javax.persistence.*;
 
 import java.math.BigDecimal;
 
 @Entity
-public class Book extends Item {
+public class Book {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Setter @Getter
     private Long bookId;
+
+    @Setter @Getter
+    @Column(name = "title")
     private String title;
-    private String author;
-    private BigDecimal price;
 
+    @Getter @Setter
+    protected String author;
+
+    @Getter @Setter
+    protected BigDecimal price;
+
+    @Getter @Setter
     private Integer quantity;
-    public Book(String title, BigDecimal price, Integer quantity) {
-        this.title = title;
-        this.quantity = quantity;
-        this.price = price;
-    }
-    public Book(BigDecimal price, Integer quantity) {
-        this.quantity = quantity;
-        this.price = price;
-    }
 
+    public Book(String title, String auth, BigDecimal price, Integer quantity) {
+        this.title = title;
+        this.author = auth;
+        this.price = price;
+        this.quantity = quantity;
+
+    }
 
     public Book() {
-        quantity = 1;
-    }
-    @Override
-    public String getType() {
-        return "Book";
-    }
-
-    @Override
-    public String getTitle() {
-        return this.title;
-    }
-
-    @Override
-    public BigDecimal getPrice() {
-        return this.price;
-    }
-
-    @Override
-    public Integer getQuantity() {
-        return this.quantity;
-    }
-
-    @Override
-
-
-    public String getAuthor() {
-        return author;
-    }
-
-    @Override
-    public Long getId() {
-        return bookId;
-    }
-
-
-    @Override
-    public void setTitle(String title) {
-        this.title=title;
-    }
-
-    @Override
-    public void setPrice(BigDecimal price) {
-        this.price=price;
-    }
-
-    @Override
-    public void setQuantity(Integer quantity) {
-        this.quantity= quantity;
-    }
-
-
-    public void setAuthor(String author) {
-        this.author = author;
-    }
-
-
-
-    @Override
-    public String toString() {
-        return "Book{" +
-                "bookId=" + bookId +
-                ", title='" + title + '\'' +
-                ", author='" + author + '\'' +
-                ", price=" + price +
-                ", quantity=" + quantity +
-                '}';
     }
 }

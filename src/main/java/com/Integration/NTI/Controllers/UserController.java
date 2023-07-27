@@ -35,18 +35,8 @@ public class UserController {
     @PostMapping("/SignUp")
     public ResponseEntity<String> createUser(@Valid @RequestBody CreateUserRequest userRequest, BindingResult bindingResult)  {
 
-        User newUser = new User();
-
-        newUser.setUserName(userRequest.getUsername());
-        newUser.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-        newUser.setAdmin(userRequest.isAdmin());
-
-        Set<Role> roles = new HashSet<>();
-        roles.add(newUser.isAdmin()? Role.ADMIN : Role.USER);
-
-        newUser.setRoles(roles);
         try {
-            userService.addUser(newUser);
+            userService.addUser(userRequest);
             return new ResponseEntity<>("USER ADDED SUCCESSFULLY", HttpStatus.CREATED);
         } catch (Exception e) {
             return new ResponseEntity<>("THIS USERNAME IS ALREADY TAKEN, TRY ANOTHER ONE.. ", HttpStatus.INTERNAL_SERVER_ERROR);

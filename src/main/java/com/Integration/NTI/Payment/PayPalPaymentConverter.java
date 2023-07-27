@@ -1,5 +1,6 @@
 package com.Integration.NTI.Payment;
 
+import com.Integration.NTI.Exception.CustomException;
 import com.Integration.NTI.Models.Book;
 import com.Integration.NTI.Models.CartItem;
 import com.Integration.NTI.Requests.PaymentRequest;
@@ -24,7 +25,7 @@ public class PayPalPaymentConverter {
     }
 
 
-    public Payment toPayPalPayment(PaymentRequest request , List<CartItem> items) {
+    public Payment toPayPalPayment(PaymentRequest request , List<CartItem> items) throws CustomException {
         // Create a PayPal Payment object
         Payment payment = new Payment();
 
@@ -51,7 +52,12 @@ public class PayPalPaymentConverter {
         List<Item> newItems = new ArrayList<>();
 
         for(CartItem cartItem : items){
-            Book book = bookService.getById(cartItem.getBook().getId());
+            Book book;
+            try {
+                book = bookService.getByIdLocal(cartItem.getBook().getBookId());
+            }catch (CustomException ex){
+                throw new CustomException(ex.getDescription(), ex.getStatus());
+            }
 
             Item item = new Item();
 

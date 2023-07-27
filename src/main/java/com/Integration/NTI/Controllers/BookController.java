@@ -1,10 +1,13 @@
 package com.Integration.NTI.Controllers;
 
+import com.Integration.NTI.Exception.CustomException;
 import com.Integration.NTI.Models.Book;
 import com.Integration.NTI.Models.Role;
 import com.Integration.NTI.Models.User;
 import com.Integration.NTI.Repositries.UserRepo;
+import com.Integration.NTI.Requests.BookRequest;
 import com.Integration.NTI.Requests.CartRequest;
+import com.Integration.NTI.Response.BookRespnse;
 import com.Integration.NTI.Services.BookService;
 import com.Integration.NTI.Services.UserService;
 import com.paypal.api.payments.Payment;
@@ -17,6 +20,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 @RequestMapping("/api/books")
@@ -24,53 +28,45 @@ import java.util.List;
 public class BookController {
 
     private BookService bookService;
-    private UserRepo userRepo;
-
-    private UserService userService;
-
-
-    @Autowired
-    public BookController(BookService bookService, UserRepo userRepo, UserService userService) {
+    public BookController(BookService bookService) {
         this.bookService = bookService;
-        this.userRepo = userRepo;
-        this.userService = userService;
     }
    @PostMapping("/create")
-   @PreAuthorize("hasRole('ADMIN')")
-   public ResponseEntity<String> createNewBook(@RequestBody Book book){
-
-       User user = userService.returnUserAuth();
-       // Print the user's role in the console
-       if (user.getRoles().contains(Role.ADMIN)) {
-           bookService.addBook(book);
-           return new ResponseEntity<>("BOOK IS ADDED SUCCESSFULLY...", HttpStatus.CREATED);
-
-       } else {
-           return new ResponseEntity<>("ONLY ADMINS CAN ADD NEW BOOK...", HttpStatus.UNAUTHORIZED);
-       }
+   public ResponseEntity<String> createNewBook(@RequestBody BookRequest book){
+        try {
+            bookService.addNewBook(book);
+            return new ResponseEntity<>("BOOK ADDED SUCCESSFULLY... ", HttpStatus.CREATED);
+        }catch (CustomException ex){
+            return new ResponseEntity<>(ex.getDescription(), ex.getStatus());
+        }
    }
     @GetMapping({"/all", "/"})
-    public ResponseEntity<List<Book>> listBooks(){
-        List<Book> list =  bookService.findAll();
-        return new ResponseEntity<>(list, HttpStatus.OK);
+    public ResponseEntity<List<BookRespnse>> listBooks(){
+        try {
+            List<BookRespnse> list =  bookService.findAll();
+            return new ResponseEntity<>(list, HttpStatus.OK);
+        }catch (Exception e){
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
     }
-    @GetMapping("/{id}")
-    public ResponseEntity<Book> getById(@PathVariable Long id){
-        Book book = bookService.getById(id);
-        return new ResponseEntity<>(book, HttpStatus.OK);
+    @GetMapping("get/{id}")
+    public ResponseEntity<BookRespnse> getById(@PathVariable Long id){
+        try {
+            BookRespnse book = bookService.getById(id);
+            return new ResponseEntity<>(book, HttpStatus.OK);
+        } catch (CustomException ex){
+            return new ResponseEntity<>(ex.getStatus());
+        }
     }
-    @GetMapping("/delete/{id}")
-
+    @GetMapping("/delete")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<String> deleteById(@RequestBody CartRequest request){
-        User user = userService.returnUserAuth();
-        // Print the user's role in the console
-        if (user.getRoles().contains(Role.ADMIN)) {
-        bookService.deleteById(request.getBookId(), request.getQuantity());
-        return new ResponseEntity<>("BOOK IS SUCCESSFULLY DELETED",HttpStatus.NO_CONTENT);
+        try {
+            bookService.deleteById(request.getBookId(), request.getQuantity());
+            return new ResponseEntity<>("BOOK IS SUCCESSFULLY DELETED",HttpStatus.NO_CONTENT);
+        }catch (CustomException ex){
+            return new ResponseEntity<>(ex.getDescription(),ex.getStatus());
         }
-        else{
-            return new ResponseEntity<>("ONLY ADMINS CAN DELETE BOOK...", HttpStatus.UNAUTHORIZED);
 
-        }
     }
 }

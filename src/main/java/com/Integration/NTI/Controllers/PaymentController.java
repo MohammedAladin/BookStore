@@ -1,5 +1,6 @@
 package com.Integration.NTI.Controllers;
 
+import com.Integration.NTI.Exception.CustomException;
 import com.Integration.NTI.Requests.PaymentRequest;
 import com.Integration.NTI.Services.CartServices;
 import com.Integration.NTI.Services.PaymentService;
@@ -27,8 +28,13 @@ public class PaymentController {
     @GetMapping("/execute-payment")
     public ResponseEntity<String> executePayment(@RequestBody PaymentRequest paymentRequest) throws PayPalRESTException {
 
-        cartServices.checkOutCart(paymentRequest);
-        return new ResponseEntity<>("PAYMENT SUCCESSFULLY DONE", HttpStatus.OK);
+        try {
+            cartServices.checkOutCart(paymentRequest);
+            return new ResponseEntity<>("PAYMENT SUCCESSFULLY DONE", HttpStatus.OK);
+        }catch (CustomException ex){
+            return new ResponseEntity<>(ex.getDescription(),ex.getStatus());
+
+        }
     }
 
 

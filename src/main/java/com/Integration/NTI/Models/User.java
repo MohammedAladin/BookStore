@@ -30,6 +30,7 @@ public class User {
     private String password;
 
     boolean isAdmin;
+
     public User(String username, String password, Set<Role> roles) {
         this.userName = username;
         this.password = password;

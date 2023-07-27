@@ -1,4 +1,5 @@
 package com.Integration.NTI.Controllers;
+import com.Integration.NTI.Exception.CustomException;
 import com.Integration.NTI.Models.CartItem;
 import com.Integration.NTI.Requests.CartRequest;
 import com.Integration.NTI.Requests.PaymentRequest;
@@ -37,15 +38,19 @@ public class CartController {
                 return new ResponseEntity<>("ITEM IS ADDED SUCCESSFULLY.. ", HttpStatus.CREATED);
             }catch (NullPointerException ex){
                 return new ResponseEntity<>("THIS QUANTITY IS NOT AVAILABLE.. ", HttpStatus.CREATED);
-
+            }catch (CustomException ex){
+                return new ResponseEntity<>(ex.getDescription(),ex.getStatus());
             }
 
 
     }
     @PostMapping("/FINISHPAYMENT")
     private ResponseEntity<String> finishPayment(@RequestBody PaymentRequest paymentRequest) throws PayPalRESTException{
-
-              return new ResponseEntity<>(cartServices.checkOutCart(paymentRequest), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(cartServices.checkOutCart(paymentRequest), HttpStatus.OK);
+        }catch (CustomException ex){
+            return new ResponseEntity<>(ex.getStatus());
+        }
 
     }
     @GetMapping({"","/"})

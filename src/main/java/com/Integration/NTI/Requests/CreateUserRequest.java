@@ -5,6 +5,9 @@ public class CreateUserRequest {
     private String password;
     private boolean admin;
 
+    public CreateUserRequest() {
+    }
+
     public String getUsername() {
         return username;
     }

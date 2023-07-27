@@ -1,9 +1,11 @@
 package com.Integration.NTI.Services;
 
 import com.Integration.NTI.Models.Book;
+import com.Integration.NTI.Models.Role;
 import com.Integration.NTI.Models.User;
 import com.Integration.NTI.Repositries.BookRepo;
 import com.Integration.NTI.Repositries.UserRepo;
+import com.Integration.NTI.Requests.CreateUserRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -13,17 +15,19 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepo userRepo;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Autowired
     public UserService(UserRepo userRepo) {
         this.userRepo = userRepo;
@@ -57,12 +61,23 @@ public class UserService implements UserDetailsService {
         return getByUsername(userName);
 
     }
+
     public List<User> findAll(){
         return userRepo.findAll();
     }
 
-    public User addUser(User user){
-         return userRepo.save(user);
+    public User addUser(CreateUserRequest userRequest){
+        User newUser = new User();
+
+        newUser.setUserName(userRequest.getUsername());
+        newUser.setPassword(passwordEncoder.encode(userRequest.getPassword()));
+        newUser.setAdmin(userRequest.isAdmin());
+        System.out.println(newUser.isAdmin());
+
+        Set<Role> roles = new HashSet<>();
+        roles.add(newUser.isAdmin()? Role.ADMIN : Role.USER);
+        newUser.setRoles(roles);
+        return userRepo.save(newUser);
     }
     public User getById(Long id){
         return userRepo.findById(id).get();

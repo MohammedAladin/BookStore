@@ -1,4 +1,5 @@
 package com.Integration.NTI.Services;
+import com.Integration.NTI.Exception.CustomException;
 import com.Integration.NTI.Models.CartItem;
 import com.Integration.NTI.Payment.PayPalApi;
 import com.Integration.NTI.Response.PaymentResponse;
@@ -29,7 +30,7 @@ public class PaymentService {
 
 
 
-    public PaymentResponse executePayment(PaymentRequest request, List<CartItem> items) throws PayPalRESTException {
+    public PaymentResponse executePayment(PaymentRequest request, List<CartItem> items) throws PayPalRESTException, CustomException {
         // Convert the PaymentRequest to a PayPal Payment object
         Payment payment = payPalPaymentConverter.toPayPalPayment(request, items);
         System.out.println("payment sett");

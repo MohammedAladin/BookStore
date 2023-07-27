@@ -69,6 +69,7 @@ public class CartServices {
         List<CartItem> allItems = cartItemRepo.findAll();
         List<CartItem> items = new ArrayList<>();
         for(CartItem item : allItems){
+
             if(item.getCart().getId().equals(cartId))
                 items.add(item);
         }
@@ -82,13 +83,18 @@ public class CartServices {
         }
         return total;
     }
-    public void updateItems(List<CartItem> items){
+    public void updateItems(List<CartItem> items) throws CustomException{
         for(CartItem item : items){
             cartItemRepo.delete(item);
-            bookService.deleteById(item.getBook().getId(), item.getQuantity());
+            try {
+                bookService.deleteById(item.getBook().getBookId(), item.getQuantity());
+            }
+            catch (CustomException ex){
+                throw new CustomException(ex.getDescription(), ex.getStatus());
+            }
         }
     }
-    public String checkOutCart(PaymentRequest paymentRequest) throws PayPalRESTException {
+    public String checkOutCart(PaymentRequest paymentRequest) throws PayPalRESTException, CustomException {
 
         Long cartId = getCartForCurrentUser().getId();
         List<CartItem> items = getAllCartItems(cartId);
@@ -96,21 +102,31 @@ public class CartServices {
         paymentRequest.setTotal(total);
         System.out.println("payment sett");
         PaymentResponse paymentResponse = paymentService.executePayment(paymentRequest, items);
-
-        updateItems(items);
+        try {
+            updateItems(items);
+        }catch (CustomException ex){
+            throw new CustomException(ex.getDescription(),ex.getStatus());
+        }
 
         return paymentResponse.getApprovalLink();
 
     }
 
-    public void saveCart(CartRequest cartRequest) throws NullPointerException {
-
-        Book book = bookService.getById(cartRequest.getBookId());
+    public void saveCart(CartRequest cartRequest) throws NullPointerException, CustomException {
+        Book book;
+        try {
+         book = bookService.getByIdLocal(cartRequest.getBookId());
+        }catch (CustomException ex){
+            throw new CustomException(ex.getDescription(),ex.getStatus());
+        }
 
 
         if(book.getQuantity() < cartRequest.getQuantity())
             throw null;
+
         CartItem newCartItem = new CartItem("Book",book, cartRequest.getQuantity());
+
+
 
         Cart cart = getCartForCurrentUser();
 

@@ -1,5 +1,7 @@
 package com.Integration.NTI.Models;
 
+import com.Integration.NTI.Interfaces.Item;
+
 import javax.persistence.*;
 import java.math.BigDecimal;
 
@@ -23,6 +25,12 @@ public class CartItem {
     @JoinColumn(name = "cart_id")
     private Cart cart;
 
+    public CartItem(String type, Book item, int quantity) {
+        this.book = item;
+        this.quantity = quantity;
+        this.type =type;
+        this.price = price.add(book.getPrice().multiply(BigDecimal.valueOf(quantity)));
+    }
     public Long getId() {
         return id;
     }
@@ -31,8 +39,8 @@ public class CartItem {
         this.id = id;
     }
 
-    public Item getBook() {
-        return book;
+    public Book getBook() {
+        return this.book;
     }
 
     public void setBook(Book book) {
@@ -72,23 +80,8 @@ public class CartItem {
     }
 // Constructor, getters, and setters
 
-    public CartItem(String type,Book item, int quantity) {
-        this.book = item;
-        this.quantity = quantity;
-        this.type =type;
-        this.price = price.add(book.getPrice().multiply(BigDecimal.valueOf(quantity)));
-    }
 
     public CartItem(){}
 
-    @Override
-    public String toString() {
-        return "CartItem{" +
-                "id=" + id +
-                ", book=" + book +
-                ", quantity=" + quantity +
-                ", price=" + price +
-                ", cart=" + cart +
-                '}';
-    }
+
 }

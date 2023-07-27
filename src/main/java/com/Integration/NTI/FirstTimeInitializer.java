@@ -2,6 +2,7 @@ package com.Integration.NTI;
 
 import com.Integration.NTI.Models.Role;
 import com.Integration.NTI.Models.User;
+import com.Integration.NTI.Requests.CreateUserRequest;
 import com.Integration.NTI.Services.UserService;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
@@ -28,16 +29,11 @@ public class FirstTimeInitializer implements CommandLineRunner {
         {
 
             logger.info("No users are found");
-            User user = new User();
-            user.setUserName("Admin.com");
-            user.setPassword(passwordEncoder.encode("123456"));
+            CreateUserRequest user = new CreateUserRequest();
+            user.setUsername("Admin.com");
+            user.setPassword("123456");
             user.setAdmin(true);// Encode the password
-            Set<Role> roles = new HashSet<>();
-            roles.add(Role.ADMIN);
-
-            user.setRoles(roles);
             userService.addUser(user);
-
 
         }
     }
