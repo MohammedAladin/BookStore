@@ -1,4 +1,4 @@
-# Bookstore API
+# PayPal-Books-API 
 
 Bookstore API is a RESTful API developed using Java Spring that allows customers to browse, search, and purchase books. It integrates with a payment gateway to process payments and uses Spring Security for authentication and authorization.
 
