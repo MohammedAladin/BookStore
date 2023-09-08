@@ -1,49 +1,37 @@
 package com.Integration.NTI.Services;
 import com.Integration.NTI.Exception.CustomException;
-import com.Integration.NTI.Models.Book;
-import com.Integration.NTI.Models.Cart;
-import com.Integration.NTI.Models.CartItem;
-import com.Integration.NTI.Requests.CartRequest;
-import com.Integration.NTI.Response.BookRespnse;
-import com.Integration.NTI.Response.CartItemResponse;
-import com.Integration.NTI.Response.PaymentResponse;
-import com.Integration.NTI.Models.User;
+import com.Integration.NTI.Models.Entities.Book;
+import com.Integration.NTI.Models.Entities.Cart;
+import com.Integration.NTI.Models.Entities.CartItem;
+import com.Integration.NTI.Models.Requests.CartRequest;
+import com.Integration.NTI.Models.Response.CartItemResponse;
+import com.Integration.NTI.Models.Entities.User;
 import com.Integration.NTI.Repositries.CartItemRepo;
 import com.Integration.NTI.Repositries.ShoppingCartRepo;
-import com.Integration.NTI.Repositries.UserRepo;
-import com.Integration.NTI.Requests.PaymentRequest;
 import com.Integration.NTI.Templates.CartWrapper;
-import com.paypal.base.rest.PayPalRESTException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 @Service
 public class CartServices {
 
-    private ShoppingCartRepo cartRepo;
-    private UserRepo userRepo;
-
-    private UserService userService;
-
-    private BookService bookService;
-    private CartItemRepo cartItemRepo;
+    private final ShoppingCartRepo cartRepo;
+    private final UserService userService;
+    private final BookService bookService;
+    private final CartItemRepo cartItemRepo;
 
     @Autowired
-    private CartServices(ShoppingCartRepo cartRepo, UserRepo userRepo,
+    private AuthService authService;
+    @Autowired
+    private CartServices(ShoppingCartRepo cartRepo,
                          UserService userService,
                          CartItemRepo cartItemRepo, BookService bookService){
         this.cartRepo = cartRepo;
-        this.userRepo = userRepo;
         this.userService = userService;
         this.cartItemRepo = cartItemRepo;
         this.bookService = bookService;
@@ -51,7 +39,7 @@ public class CartServices {
     public Cart getCartForCurrentUser() throws CustomException {
         User user;
         try {
-            user = userService.returnUserAuth();
+            user = authService.returnUserAuth();
         }catch (CustomException ex){
             throw new CustomException(ex.getDescription(),ex.getStatus());
         }
@@ -67,7 +55,7 @@ public class CartServices {
     public CartWrapper getAllCartItems() throws CustomException {
         User user;
         try {
-            user = userService.returnUserAuth();
+            user = authService.returnUserAuth();
         }catch (CustomException ex){
             throw new CustomException(ex.getDescription(), ex.getStatus());
         }
@@ -84,9 +72,7 @@ public class CartServices {
 
         List<CartItemResponse> cartItemResponses = CartItemResponse.convertToItemResponse(items);
 
-        CartWrapper cartWrapper = new CartWrapper(cartItemResponses, items);
-
-        return cartWrapper;
+        return new CartWrapper(cartItemResponses, items);
 
     }
     public BigDecimal calculateTotalAmount(List<CartItem> cartItems) {
@@ -116,7 +102,7 @@ public class CartServices {
             throw new CustomException(ex.getDescription(),ex.getStatus());
         }
 
-        CartItem newCartItem = null;
+        CartItem newCartItem;
         Cart cart = getCartForCurrentUser();
 
         List<CartItem> items = getAllCartItems().getCartItems();

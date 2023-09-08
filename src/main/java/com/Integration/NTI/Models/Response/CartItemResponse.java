@@ -1,6 +1,6 @@
-package com.Integration.NTI.Response;
-import com.Integration.NTI.Models.Book;
-import com.Integration.NTI.Models.CartItem;
+package com.Integration.NTI.Models.Response;
+import com.Integration.NTI.Models.Entities.Book;
+import com.Integration.NTI.Models.Entities.CartItem;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;

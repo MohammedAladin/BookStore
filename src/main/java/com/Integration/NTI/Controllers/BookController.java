@@ -1,33 +1,25 @@
 package com.Integration.NTI.Controllers;
 
 import com.Integration.NTI.Exception.CustomException;
-import com.Integration.NTI.Models.Book;
-import com.Integration.NTI.Models.Role;
-import com.Integration.NTI.Models.User;
-import com.Integration.NTI.Repositries.UserRepo;
-import com.Integration.NTI.Requests.BookRequest;
-import com.Integration.NTI.Requests.CartRequest;
-import com.Integration.NTI.Response.BookRespnse;
+
+import com.Integration.NTI.Models.Requests.BookRequest;
+import com.Integration.NTI.Models.Requests.CartRequest;
+import com.Integration.NTI.Models.Response.BookRespnse;
 import com.Integration.NTI.Services.BookService;
-import com.Integration.NTI.Services.UserService;
-import com.paypal.api.payments.Payment;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
+
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 
 @RequestMapping("/api/books")
 @RestController
 public class BookController {
 
-    private BookService bookService;
+    private final BookService bookService;
     public BookController(BookService bookService) {
         this.bookService = bookService;
     }

@@ -1,6 +1,6 @@
-package com.Integration.NTI.Response;
+package com.Integration.NTI.Models.Response;
 
-import com.Integration.NTI.Models.User;
+import com.Integration.NTI.Models.Entities.User;
 
 import java.util.ArrayList;
 import java.util.List;

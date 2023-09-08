@@ -1,4 +1,4 @@
-package com.Integration.NTI.Models;
+package com.Integration.NTI.Models.Entities;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -15,7 +15,6 @@ public class Book {
     private Long bookId;
 
     @Setter @Getter
-    @Column(name = "title")
     private String title;
 
     @Getter @Setter

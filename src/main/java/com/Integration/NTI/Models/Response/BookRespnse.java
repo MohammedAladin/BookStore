@@ -1,7 +1,7 @@
-package com.Integration.NTI.Response;
+package com.Integration.NTI.Models.Response;
 
-import com.Integration.NTI.Models.BaseBook;
-import com.Integration.NTI.Models.Book;
+import com.Integration.NTI.Models.Entities.BaseBook;
+import com.Integration.NTI.Models.Entities.Book;
 import lombok.Getter;
 import lombok.Setter;
 

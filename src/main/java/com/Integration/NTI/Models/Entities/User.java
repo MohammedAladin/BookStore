@@ -1,28 +1,29 @@
-package com.Integration.NTI.Models;
+package com.Integration.NTI.Models.Entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import org.hibernate.validator.constraints.UniqueElements;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 import javax.validation.constraints.NotEmpty;
 
 
 import java.util.Collection;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "User")
-public class User {
+public class User  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 
     private Long id;
 
+    public String getUserName() {
+        return userName;
+    }
 
     @Column(nullable = false, unique = true)
     private String userName;
@@ -63,17 +64,19 @@ public class User {
     }
 
 
-    public String getUserName() {
-        return userName;
-    }
 
     public void setUserName(String email) {
         this.userName = email;
     }
 
+
+
     public String getPassword() {
         return password;
     }
+
+
+
 
     public void setPassword(String password) {
         this.password = password;

@@ -1,4 +1,4 @@
-package com.Integration.NTI.Requests;
+package com.Integration.NTI.Models.Requests;
 
 import javax.swing.text.Position;
 import java.math.BigDecimal;

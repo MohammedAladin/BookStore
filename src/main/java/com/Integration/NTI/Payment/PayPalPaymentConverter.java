@@ -1,9 +1,9 @@
 package com.Integration.NTI.Payment;
 
 import com.Integration.NTI.Exception.CustomException;
-import com.Integration.NTI.Models.Book;
-import com.Integration.NTI.Models.CartItem;
-import com.Integration.NTI.Requests.PaymentRequest;
+import com.Integration.NTI.Models.Entities.Book;
+import com.Integration.NTI.Models.Entities.CartItem;
+import com.Integration.NTI.Models.Requests.PaymentRequest;
 import com.Integration.NTI.Services.BookService;
 import com.paypal.api.payments.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +11,6 @@ import org.springframework.stereotype.Component;
 
 import java.math.RoundingMode;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Component

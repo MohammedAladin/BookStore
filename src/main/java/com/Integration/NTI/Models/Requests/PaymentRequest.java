@@ -1,10 +1,6 @@
-package com.Integration.NTI.Requests;
-
-import com.Integration.NTI.Models.CartItem;
-import org.springframework.web.bind.annotation.RequestParam;
+package com.Integration.NTI.Models.Requests;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 public class PaymentRequest {
     private BigDecimal total;

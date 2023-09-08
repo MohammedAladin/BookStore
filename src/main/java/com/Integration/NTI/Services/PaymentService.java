@@ -1,10 +1,10 @@
 package com.Integration.NTI.Services;
 import com.Integration.NTI.Exception.CustomException;
-import com.Integration.NTI.Models.CartItem;
+import com.Integration.NTI.Models.Entities.CartItem;
 import com.Integration.NTI.Payment.PayPalApi;
-import com.Integration.NTI.Response.PaymentResponse;
+import com.Integration.NTI.Models.Response.PaymentResponse;
 import com.Integration.NTI.Payment.PayPalPaymentConverter;
-import com.Integration.NTI.Requests.PaymentRequest;
+import com.Integration.NTI.Models.Requests.PaymentRequest;
 import com.paypal.base.rest.PayPalRESTException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;

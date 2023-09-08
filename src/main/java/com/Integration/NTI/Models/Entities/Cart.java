@@ -1,4 +1,4 @@
-package com.Integration.NTI.Models;
+package com.Integration.NTI.Models.Entities;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -15,7 +15,6 @@ public class Cart {
     private Long id;
 
     @OneToOne
-    @JoinColumn(name = "user_id")
     @JsonManagedReference
 
     private User user;

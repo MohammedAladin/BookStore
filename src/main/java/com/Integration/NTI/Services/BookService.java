@@ -1,11 +1,11 @@
 package com.Integration.NTI.Services;
 
 import com.Integration.NTI.Exception.CustomException;
-import com.Integration.NTI.Models.Book;
-import com.Integration.NTI.Models.User;
+import com.Integration.NTI.Models.Entities.Book;
+import com.Integration.NTI.Models.Entities.User;
 import com.Integration.NTI.Repositries.BookRepo;
-import com.Integration.NTI.Requests.BookRequest;
-import com.Integration.NTI.Response.BookRespnse;
+import com.Integration.NTI.Models.Requests.BookRequest;
+import com.Integration.NTI.Models.Response.BookRespnse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -18,8 +18,11 @@ import java.util.Optional;
 public class BookService {
     private BookRepo bookRepo;
     private UserService userService;
+    @Autowired
 
-@Autowired
+    private AuthService authService;
+
+    @Autowired
     public BookService(BookRepo bookRepo, UserService userService) {
         this.bookRepo = bookRepo;
         this.userService = userService;
@@ -31,7 +34,7 @@ public class BookService {
      * @throws CustomException
      */
     public Book addNewBook(BookRequest book) throws CustomException {
-        User currentUser = userService.returnUserAuth();
+        User currentUser = authService.returnUserAuth();
         System.out.println("current: "+ currentUser.isAdmin());
         if(currentUser.isAdmin()) {
             Book newBook;
@@ -75,7 +78,7 @@ public class BookService {
         }
     }
     public void deleteById(Long id, Integer quantity) throws CustomException {
-        User currentUser = userService.returnUserAuth();
+        User currentUser = authService.returnUserAuth();
         if(currentUser.isAdmin()) {
             Book book;
             try {

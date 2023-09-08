@@ -1,7 +1,7 @@
 package com.Integration.NTI.Templates;
 
-import com.Integration.NTI.Models.User;
-import com.Integration.NTI.Response.UserResponse;
+import com.Integration.NTI.Models.Entities.User;
+import com.Integration.NTI.Models.Response.UserResponse;
 import lombok.Getter;
 import lombok.Setter;
 

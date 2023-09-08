@@ -1,11 +1,11 @@
-package com.Integration.NTI.Requests;
+package com.Integration.NTI.Models.Requests;
 
-public class CreateUserRequest {
+public class SignUpRequset {
     private String username;
     private String password;
     private boolean admin;
 
-    public CreateUserRequest() {
+    public SignUpRequset() {
     }
 
     public String getUsername() {

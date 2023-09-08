@@ -1,4 +1,4 @@
-package com.Integration.NTI.Models;
+package com.Integration.NTI.Models.Entities;
 
 
 import javax.persistence.*;

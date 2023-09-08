@@ -1,9 +1,7 @@
 package com.Integration.NTI;
 
-import com.Integration.NTI.Models.Role;
-import com.Integration.NTI.Models.User;
+import com.Integration.NTI.Models.Entities.User;
 import com.Integration.NTI.Repositries.UserRepo;
-import com.Integration.NTI.Requests.CreateUserRequest;
 import com.Integration.NTI.Services.UserService;
 import org.apache.juli.logging.Log;
 import org.apache.juli.logging.LogFactory;
@@ -12,10 +10,6 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 @Component
 public class FirstTimeInitializer implements CommandLineRunner {

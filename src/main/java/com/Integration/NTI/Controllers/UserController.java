@@ -1,40 +1,28 @@
 package com.Integration.NTI.Controllers;
 import com.Integration.NTI.Exception.CustomException;
-import com.Integration.NTI.Requests.CreateUserRequest;
+import com.Integration.NTI.Models.Requests.SignUpRequset;
 import com.Integration.NTI.Templates.ResponseWrapper;
-import com.Integration.NTI.Response.UserResponse;
+import com.Integration.NTI.Models.Response.UserResponse;
 import com.Integration.NTI.Services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
 @RestController
-@RequestMapping("/api/auth")
+@RequestMapping("/api/user")
 
 public class UserController {
-    private UserService userService;
+    private final UserService userService;
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
-    @Autowired
-    private PasswordEncoder passwordEncoder;
-    @PostMapping("/SignUp")
-    public ResponseEntity<String> createUser(@Valid @RequestBody CreateUserRequest userRequest)  {
-        try {
-            userService.addUser(userRequest);
-            return new ResponseEntity<>("USER ADDED SUCCESSFULLY", HttpStatus.CREATED);
-        } catch (CustomException e) {
-            return new ResponseEntity<>(e.getDescription(), e.getStatus());
-        }
-    }
+
     @GetMapping({"","/"})
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ResponseWrapper<UserResponse>> findAll(){

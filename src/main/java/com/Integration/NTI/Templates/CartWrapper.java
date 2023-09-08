@@ -1,8 +1,7 @@
 package com.Integration.NTI.Templates;
 
-import com.Integration.NTI.Models.Cart;
-import com.Integration.NTI.Models.CartItem;
-import com.Integration.NTI.Response.CartItemResponse;
+import com.Integration.NTI.Models.Entities.CartItem;
+import com.Integration.NTI.Models.Response.CartItemResponse;
 import lombok.Getter;
 import lombok.Setter;
 

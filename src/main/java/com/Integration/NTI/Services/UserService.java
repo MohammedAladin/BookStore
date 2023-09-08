@@ -1,37 +1,37 @@
 package com.Integration.NTI.Services;
 
 import com.Integration.NTI.Exception.CustomException;
-import com.Integration.NTI.Models.Book;
-import com.Integration.NTI.Models.Role;
-import com.Integration.NTI.Models.User;
-import com.Integration.NTI.Repositries.BookRepo;
+import com.Integration.NTI.Models.Entities.Role;
+import com.Integration.NTI.Models.Entities.User;
 import com.Integration.NTI.Repositries.UserRepo;
-import com.Integration.NTI.Requests.CreateUserRequest;
-import com.Integration.NTI.Response.UserResponse;
+import com.Integration.NTI.Models.Requests.SignUpRequset;
+import com.Integration.NTI.Models.Response.UserResponse;
 import com.Integration.NTI.Templates.UserWapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
+@Component()
 public class UserService implements UserDetailsService {
 
     @Autowired
     private UserRepo userRepo;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    private AuthService authService;
 
     @Autowired
     public UserService(UserRepo userRepo) {
@@ -58,43 +58,8 @@ public class UserService implements UserDetailsService {
                 authorities
         );
     }
-    public User returnUserAuth() throws CustomException {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String userName = ((UserDetails) authentication.getPrincipal()).getUsername();
-        return getByUsername(userName).getUser();
-
-    }
-
-    public User addUser(CreateUserRequest userRequest) throws CustomException {
-        User newUser = new User();
-        User current;
-
-        try {
-            current = returnUserAuth();
-        }catch (CustomException exception){
-            throw new CustomException(exception.getDescription(), exception.getStatus());
-        }
-        if(current.isAdmin()) {
-            newUser.setUserName(userRequest.getUsername());
-            newUser.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-            newUser.setAdmin(userRequest.isAdmin());
-
-            for(User user : userRepo.findAll()){
-                if(user.getUserName().equals(userRequest.getUsername()))
-                    throw new CustomException("THIS USER IS ALREADY EXISTS TRY ANOTHER USERNAME.. ", HttpStatus.FORBIDDEN);
-            }
-
-            Set<Role> roles = new HashSet<>();
-            roles.add(newUser.isAdmin() ? Role.ADMIN : Role.USER);
-            newUser.setRoles(roles);
-            return userRepo.save(newUser);
-        }
-        else{
-            throw new CustomException("ONLY ADMINS CAN ADD NEW USER....", HttpStatus.UNAUTHORIZED);
-        }
-    }
     public List<UserResponse> findAll() throws CustomException {
-        User authUser = returnUserAuth();
+        User authUser = authService.returnUserAuth();
         if(authUser.isAdmin())
         {
             List<User> users = userRepo.findAll();

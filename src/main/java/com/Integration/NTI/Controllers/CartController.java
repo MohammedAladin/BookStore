@@ -1,33 +1,26 @@
 package com.Integration.NTI.Controllers;
 import com.Integration.NTI.Exception.CustomException;
-import com.Integration.NTI.Models.CartItem;
-import com.Integration.NTI.Requests.CartRequest;
-import com.Integration.NTI.Requests.PaymentRequest;
-import com.Integration.NTI.Response.CartItemResponse;
-import com.Integration.NTI.Services.BookService;
+import com.Integration.NTI.Models.Requests.CartRequest;
+
+import com.Integration.NTI.Models.Response.CartItemResponse;
 import com.Integration.NTI.Services.CartServices;
 import com.Integration.NTI.Templates.ResponseWrapper;
-import com.paypal.base.rest.PayPalRESTException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.NoSuchElementException;
+
 
 @RestController
 @RequestMapping("api/cart")
 public class CartController {
 
-    private CartServices cartServices;
-    private BookService bookService;
+    private final CartServices cartServices;
 
     @Autowired
-    private CartController(CartServices cartServices, BookService bookService){
+    private CartController(CartServices cartServices){
         this.cartServices = cartServices;
-        this.bookService = bookService;
     }
     @PostMapping("/AddToCart")
     private ResponseEntity<String> AddToCart(@RequestBody CartRequest cartRequest)  {
